@@ -16,17 +16,14 @@ function SkySnowfall({ scrollProgress }) {
     
     for (let i = 0; i < snowCount; i++) {
       const i3 = i * 3
-      // Fill the entire sky with snow particles
-      positions[i3] = (Math.random() - 0.5) * 800  // Very wide spread
-      positions[i3 + 1] = Math.random() * 400 + 50 // From ground to high sky
-      positions[i3 + 2] = (Math.random() - 0.5) * 800 // Deep volume
+      positions[i3] = (Math.random() - 0.5) * 800 
+      positions[i3 + 1] = Math.random() * 400 + 50 
+      positions[i3 + 2] = (Math.random() - 0.5) * 800 
       
-      // Natural snow fall
       velocities[i3] = (Math.random() - 0.5) * 1.5  
       velocities[i3 + 1] = -Math.random() * 2.0 - 1.0 
       velocities[i3 + 2] = (Math.random() - 0.5) * 1.5 
       
-      // Varied snowflake sizes
       sizes[i] = Math.random() * 1.0 + 0.3
     }
     
