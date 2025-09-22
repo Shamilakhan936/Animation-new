@@ -1,301 +1,244 @@
-import { useRef, useMemo, useState, useEffect } from 'react'
-import { useFrame } from '@react-three/fiber'
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls, useTexture } from '@react-three/drei'
+import { useState, useEffect, useRef } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { useTexture } from '@react-three/drei'
 import * as THREE from 'three'
 
-// Sky Snowfall - Snow falling as you scroll through the sky
-function SkySnowfall({ scrollProgress }) {
-  const snowRef = useRef()
-  const snowCount = 20000
-  
-  const snowParticles = useMemo(() => {
-    const positions = new Float32Array(snowCount * 3)
-    const velocities = new Float32Array(snowCount * 3)
-    const sizes = new Float32Array(snowCount)
-    
-    for (let i = 0; i < snowCount; i++) {
-      const i3 = i * 3
-      positions[i3] = (Math.random() - 0.5) * 800 
-      positions[i3 + 1] = Math.random() * 400 + 50 
-      positions[i3 + 2] = (Math.random() - 0.5) * 800 
-      
-      velocities[i3] = (Math.random() - 0.5) * 1.5  
-      velocities[i3 + 1] = -Math.random() * 2.0 - 1.0 
-      velocities[i3 + 2] = (Math.random() - 0.5) * 1.5 
-      
-      sizes[i] = Math.random() * 1.0 + 0.3
-    }
-    
-    return { positions, velocities, sizes }
-  }, [])
+// Import images from assets
+import image1 from '../assets/1.jpeg'
+import image2 from '../assets/2.jpeg'
+import image3 from '../assets/3.jpeg'
+import image4 from '../assets/4.jpeg'
+import image5 from '../assets/5.jpeg'
+import image7 from '../assets/7.jpeg'
+import image8 from '../assets/8.jpeg'
+import image9 from '../assets/9.jpeg'
+
+// 3D Image Cube Component
+function ImageCube({ image, position, scrollProgress, index }) {
+  const meshRef = useRef()
+  const texture = useTexture(image)
   
   useFrame((state) => {
-    if (snowRef.current) {
-      const positions = snowRef.current.geometry.attributes.position.array
+    if (meshRef.current) {
       const time = state.clock.elapsedTime
+      const intensity = 0.3 + scrollProgress * 0.7
       
-      // Snow intensity based on scroll
-      const snowIntensity = Math.max(0.3, scrollProgress * 1.5)
+      // Rotate the cube
+      meshRef.current.rotation.x = time * 0.5 * intensity
+      meshRef.current.rotation.y = time * 0.3 * intensity
       
-      for (let i = 0; i < snowCount; i++) {
-        const i3 = i * 3
-        
-        // Wind effects
-        const windStrength = Math.sin(time * 0.5 + positions[i3] * 0.001) * 0.2 * snowIntensity
-        const altitudeFactor = positions[i3 + 1] / 300
-        const turbulence = Math.sin(time * 0.8 + positions[i3 + 2] * 0.002) * 0.1 * snowIntensity
-        
-        // Snow movement
-        positions[i3] += (windStrength * altitudeFactor + turbulence) * snowIntensity
-        positions[i3 + 1] += snowParticles.velocities[i3 + 1] * snowIntensity
-        positions[i3 + 2] += (snowParticles.velocities[i3 + 2] + windStrength * 0.5) * snowIntensity
-        
-        // Reset particles that fall below ground
-        if (positions[i3 + 1] < -20) {
-          positions[i3] = (Math.random() - 0.5) * 800
-          positions[i3 + 1] = Math.random() * 200 + 350 // Reset high in sky
-          positions[i3 + 2] = (Math.random() - 0.5) * 800
-        }
-      }
+      // Float up and down
+      meshRef.current.position.y = position[1] + Math.sin(time + index) * 2 * intensity
       
-      snowRef.current.geometry.attributes.position.needsUpdate = true
+      // Scale based on scroll
+      meshRef.current.scale.setScalar(0.5 + scrollProgress * 0.5)
     }
   })
   
   return (
-    <points ref={snowRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={snowCount}
-          array={snowParticles.positions}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-size"
-          count={snowCount}
-          array={snowParticles.sizes}
-          itemSize={1}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        color="#ffffff"
-        size={0.8}
-        transparent
-        opacity={scrollProgress > 0 ? Math.min(scrollProgress * 2, 1) : 0.2} // More visible snow
-        sizeAttenuation
-        vertexColors={false}
-      />
-    </points>
+    <mesh ref={meshRef} position={position}>
+      <boxGeometry args={[3, 3, 3]} />
+      <meshBasicMaterial map={texture} transparent opacity={0.7 + scrollProgress * 0.3} />
+    </mesh>
   )
 }
 
-// Northern Lights - Only appears when scrolling
-function EpicNorthernLights({ scrollProgress }) {
-  const lightsRef = useRef()
+// 3D Image Sphere Component
+function ImageSphere({ image, position, scrollProgress, index }) {
+  const meshRef = useRef()
+  const texture = useTexture(image)
   
   useFrame((state) => {
-    if (lightsRef.current) {
+    if (meshRef.current) {
       const time = state.clock.elapsedTime
-      const intensity = Math.pow(scrollProgress, 2) * 4
+      const intensity = 0.3 + scrollProgress * 0.7
       
-      // Only animate when scrolling
-      if (intensity > 0) {
-        lightsRef.current.rotation.y = time * 0.4 * intensity
-        lightsRef.current.position.y = Math.sin(time * 0.8) * 5 * intensity
-        lightsRef.current.position.x = Math.sin(time * 0.6) * 4 * intensity
-        lightsRef.current.rotation.z = Math.sin(time * 0.3) * 0.1 * intensity
-      }
+      // Rotate the sphere
+      meshRef.current.rotation.x = time * 0.4 * intensity
+      meshRef.current.rotation.y = time * 0.6 * intensity
+      
+      // Orbit around center
+      meshRef.current.position.x = position[0] + Math.cos(time + index) * 3 * intensity
+      meshRef.current.position.z = position[2] + Math.sin(time + index) * 3 * intensity
+      
+      // Scale based on scroll
+      meshRef.current.scale.setScalar(0.4 + scrollProgress * 0.6)
     }
   })
   
   return (
-    <group ref={lightsRef}>
-      {/* Aurora layers - shimmer in the sky */}
-      {Array.from({ length: 15 }).map((_, i) => (
-        <mesh key={i} position={[0, 20 + i * 5, -25]} rotation={[0, 0, 0]}>
-          <planeGeometry args={[80, 25]} />
-          <meshBasicMaterial
-            color={i % 4 === 0 ? "#00ff88" : i % 4 === 1 ? "#0088ff" : i % 4 === 2 ? "#ff0088" : "#ffff00"}
-            transparent
-            opacity={scrollProgress > 0 ? Math.min(scrollProgress * 2, (0.4 + i * 0.1)) : 0} // Shimmer effect
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-      ))}
-    </group>
+    <mesh ref={meshRef} position={position}>
+      <sphereGeometry args={[2, 32, 32]} />
+      <meshBasicMaterial map={texture} transparent opacity={0.6 + scrollProgress * 0.4} />
+    </mesh>
   )
 }
 
-// Wind Swirl Effects - Only appears when scrolling
-function EpicWindSwirls({ scrollProgress }) {
-  const swirlsRef = useRef()
+// 3D Image Plane Component
+function ImagePlane({ image, position, scrollProgress, index }) {
+  const meshRef = useRef()
+  const texture = useTexture(image)
   
   useFrame((state) => {
-    if (swirlsRef.current) {
+    if (meshRef.current) {
       const time = state.clock.elapsedTime
-      const intensity = Math.pow(scrollProgress, 3) * 4
+      const intensity = 0.3 + scrollProgress * 0.7
       
-      // Only animate when scrolling
-      if (intensity > 0) {
-      swirlsRef.current.children.forEach((swirl, i) => {
-          swirl.rotation.z = time * (2.0 + i * 0.5) * intensity
-          swirl.position.x = Math.sin(time * 0.8 + i) * 12 * intensity
-          swirl.position.y = Math.cos(time * 0.6 + i) * 6 * intensity
-          swirl.position.z = -15 + scrollProgress * 30
-          swirl.rotation.x = Math.sin(time * 0.4 + i) * 0.2 * intensity
-          swirl.rotation.y = Math.cos(time * 0.3 + i) * 0.1 * intensity
-        })
+      // Rotate the plane
+      meshRef.current.rotation.z = time * 0.2 * intensity
+      
+      // Move in wave pattern
+      meshRef.current.position.y = position[1] + Math.sin(time * 2 + index) * 1.5 * intensity
+      meshRef.current.position.x = position[0] + Math.cos(time * 1.5 + index) * 2 * intensity
+      
+      // Scale based on scroll
+      meshRef.current.scale.setScalar(0.6 + scrollProgress * 0.4)
+    }
+  })
+  
+  return (
+    <mesh ref={meshRef} position={position}>
+      <planeGeometry args={[4, 4]} />
+      <meshBasicMaterial map={texture} transparent opacity={0.5 + scrollProgress * 0.5} side={THREE.DoubleSide} />
+    </mesh>
+  )
+}
+
+// Full Screen Image Component
+function FullScreenImage({ image, scrollProgress, index, isActive }) {
+  const meshRef = useRef()
+  const texture = useTexture(image)
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      const time = state.clock.elapsedTime
+      
+      if (isActive) {
+        // Zoom in effect when active
+        const zoomProgress = (scrollProgress - (index * 0.125)) * 8
+        const clampedZoom = Math.min(Math.max(zoomProgress, 0), 1)
+        
+        // Scale from 0.5 to 8 for better visibility
+        const scale = 0.5 + clampedZoom * 7.5
+        meshRef.current.scale.setScalar(scale)
+        
+        // Fade in opacity - start visible earlier
+        meshRef.current.material.opacity = Math.max(0.1, clampedZoom * 0.95)
+        
+        // Slight rotation for dynamic effect
+        meshRef.current.rotation.z = time * 0.05 * clampedZoom
+        
+        // Position adjustment for better centering
+        meshRef.current.position.z = -2 + clampedZoom * 2
+      } else {
+        // Hide when not active
+        meshRef.current.scale.setScalar(0.1)
+        meshRef.current.material.opacity = 0
+        meshRef.current.position.z = -5
       }
     }
   })
   
   return (
-    <group ref={swirlsRef}>
-      {Array.from({ length: 12 }).map((_, i) => (
-        <mesh key={i} position={[0, 0, -15]} rotation={[0, 0, 0]}>
-          <planeGeometry args={[30, 30]} />
-          <meshBasicMaterial
-            color={i % 3 === 0 ? "#4A9B8E" : i % 3 === 1 ? "#0088ff" : "#ff0088"}
-            transparent
-            opacity={scrollProgress > 0 ? Math.min(scrollProgress * 1.5, (0.2 + i * 0.05)) : 0} // Creates motion and depth
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-      ))}
-    </group>
+    <mesh ref={meshRef} position={[0, 0, -5]}>
+      <planeGeometry args={[20, 11.25]} />
+      <meshBasicMaterial map={texture} transparent opacity={0} side={THREE.DoubleSide} />
+    </mesh>
   )
 }
 
-// Tundra Landscape - Wind pulls through this
-function TundraLandscape({ scrollProgress }) {
-  const landscapeRef = useRef()
+// 3D Scene with sequential full screen images
+function Image3DScene({ scrollProgress }) {
+  const images = [image1, image2, image3, image4, image5, image7, image8, image9]
   
-  useFrame((state) => {
-    if (landscapeRef.current) {
-      const time = state.clock.elapsedTime
-      const windEffect = scrollProgress * 0.5
-      
-      // Landscape moves with wind - creates sense of entering mysterious world
-      landscapeRef.current.position.z = -20 + scrollProgress * 60
-      landscapeRef.current.rotation.y = Math.sin(time * 0.1) * 0.1 * windEffect
-    }
-  })
-  
-  return (
-    <group ref={landscapeRef}>
-      {/* Distant mountains */}
-      {Array.from({ length: 12 }).map((_, i) => (
-        <mesh key={i} position={[i * 8 - 44, -5, 0]} rotation={[0, 0, 0]}>
-          <coneGeometry args={[4, 15, 8]} />
-          <meshBasicMaterial color="#2D3748" transparent opacity={0.7} />
-        </mesh>
-      ))}
-      
-      {/* Snow caps */}
-      {Array.from({ length: 12 }).map((_, i) => (
-        <mesh key={i} position={[i * 8 - 44, 10, 0]} rotation={[0, 0, 0]}>
-          <coneGeometry args={[3, 5, 8]} />
-          <meshBasicMaterial color="#FFFFFF" transparent opacity={0.9} />
-        </mesh>
-      ))}
-      
-      {/* Ground plane */}
-      <mesh position={[0, -8, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[200, 100]} />
-        <meshBasicMaterial color="#1A202C" />
-      </mesh>
-    </group>
-  )
-}
-
-// Sky Scroll Camera - Camera moves through sky based on scroll
-function SkyScrollCamera({ scrollProgress }) {
-  const cameraRef = useRef()
-  
-  useFrame((state) => {
-    if (cameraRef.current) {
-      const time = state.clock.elapsedTime
-      
-      // Camera movement based on scroll progress
-      const scrollDistance = scrollProgress * 100 // Total distance to travel
-      const skyHeight = 20 + scrollProgress * 30 // Height in the sky
-      
-      // Gentle wind effects
-      const windSway = Math.sin(time * 0.2) * 1 * scrollProgress
-      const windPitch = Math.sin(time * 0.15) * 0.05 * scrollProgress
-      
-      // Camera position - moves forward through sky based on scroll
-      cameraRef.current.position.z = 5 + scrollDistance
-      cameraRef.current.position.x = windSway
-      cameraRef.current.position.y = skyHeight
-      
-      // Subtle camera rotation from wind
-      cameraRef.current.rotation.z = windSway * 0.01
-      cameraRef.current.rotation.x = windPitch
-      
-      // Look forward through the sky
-      cameraRef.current.lookAt(windSway, skyHeight - 5, cameraRef.current.position.z + 20)
-    }
-  })
-  
-  return <perspectiveCamera ref={cameraRef} position={[0, 20, 5]} fov={70} />
-}
-
-// Sky Scroll Scene - Scrolling through the sky with snow falling
-function SkyScrollScene({ scrollProgress }) {
   return (
     <group>
-      {/* Tundra Landscape - Far below */}
-      <TundraLandscape scrollProgress={scrollProgress} />
-      
-      {/* Sky Snowfall - Snow falling all around */}
-      <SkySnowfall scrollProgress={scrollProgress} />
-      
-      {/* Epic Northern Lights - Above */}
-      <EpicNorthernLights scrollProgress={scrollProgress} />
-      
-      {/* Epic Wind Swirls - Around the scroll path */}
-      <EpicWindSwirls scrollProgress={scrollProgress} />
-      
-      {/* Sky starfield for depth */}
-      {Array.from({ length: 500 }).map((_, i) => (
-        <mesh
-          key={i}
-          position={[
-            (Math.random() - 0.5) * 600,
-            Math.random() * 300 + 150,
-            (Math.random() - 0.5) * 600
-          ]}
-        >
-          <sphereGeometry args={[0.04, 8, 8]} />
-          <meshBasicMaterial color="#ffffff" transparent opacity={0.9} />
-        </mesh>
-      ))}
+      {/* Full screen images - one at a time */}
+      {images.map((image, index) => {
+        const imageStart = index * 0.125 // Each image gets 12.5% of scroll
+        const imageEnd = (index + 1) * 0.125
+        const isActive = scrollProgress >= imageStart && scrollProgress <= imageEnd
+        
+        return (
+          <FullScreenImage
+            key={`fullscreen-${index}`}
+            image={image}
+            scrollProgress={scrollProgress}
+            index={index}
+            isActive={isActive}
+          />
+        )
+      })}
     </group>
   )
 }
 
+// Dynamic Camera Component
+function DynamicCamera({ scrollProgress }) {
+  const cameraRef = useRef()
+  
+  useFrame(() => {
+    if (cameraRef.current) {
+      // Camera moves closer as you scroll for zoom effect
+      const zoomDistance = 15 - (scrollProgress * 10) // Move from 15 to 5
+      cameraRef.current.position.z = Math.max(zoomDistance, 5)
+      
+      // Slight camera movement for dynamic effect
+      cameraRef.current.position.x = Math.sin(scrollProgress * Math.PI * 2) * 0.3
+      cameraRef.current.position.y = Math.cos(scrollProgress * Math.PI * 2) * 0.2
+      
+      // Look at the center
+      cameraRef.current.lookAt(0, 0, 0)
+    }
+  })
+  
+  return <perspectiveCamera ref={cameraRef} position={[0, 0, 15]} fov={60} />
+}
 
+// 3D Image Display Component
+function ImageDisplay({ scrollProgress }) {
+  return (
+    <div className="absolute inset-0 w-full h-full overflow-hidden" style={{ zIndex: 5 }}>
+      <Canvas>
+        {/* Dynamic Camera */}
+        <DynamicCamera scrollProgress={scrollProgress} />
+        
+        {/* Lighting */}
+        <ambientLight intensity={1.0} />
+        <directionalLight position={[0, 0, 10]} intensity={1.5} color="#ffffff" />
+        <pointLight position={[0, 0, 5]} intensity={1.0} color="#ffffff" />
+        
+        {/* 3D Image Scene */}
+        <Image3DScene scrollProgress={scrollProgress} />
+      </Canvas>
+      
+      {/* Simple overlay for text readability */}
+      <div 
+        className="absolute inset-0 bg-black/5"
+        style={{ zIndex: 10 }}
+      />
+    </div>
+  )
+}
+
+// Static Background Scene - No animations
 function HeroScene({ scrollProgress }) {
   return (
-    <Canvas camera={{ position: [0, 20, 5], fov: 70 }}>
-      <SkyScrollCamera scrollProgress={scrollProgress} />
-      
-      {/* Sky lighting - atmospheric and dramatic */}
-      <ambientLight intensity={0.15 + scrollProgress * 0.25} />
-      <pointLight position={[0, 60, 25]} intensity={0.9 + scrollProgress * 1.2} color="#4A9B8E" />
-      <pointLight position={[-40, 30, 20]} intensity={0.7 + scrollProgress * 1.0} color="#0088ff" />
-      <pointLight position={[40, 30, 20]} intensity={0.7 + scrollProgress * 1.0} color="#ff0088" />
-      <pointLight position={[0, 100, 0]} intensity={0.5 + scrollProgress * 0.8} color="#ffff00" />
-      <directionalLight position={[0, 120, 60]} intensity={0.4 + scrollProgress * 0.6} color="#E0F2FE" />
-      
-      {/* Sky Scroll Scene */}
-      <SkyScrollScene scrollProgress={scrollProgress} />
-      
-      <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
-    </Canvas>
+    <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-slate-900/50 via-slate-800/30 to-slate-900/50" style={{ zIndex: 1 }}>
+      {/* Static stars */}
+      <div className="absolute inset-0">
+        {Array.from({ length: 200 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-white rounded-full opacity-60"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`
+            }}
+          ></div>
+        ))}
+      </div>
+    </div>
   )
 }
 
@@ -328,9 +271,11 @@ function HeroSection() {
   
   return (
     <div className="relative w-full overflow-hidden" style={{ height: '500vh' }}>
-      {/* Simple Background like the image */}
-      <div className="fixed inset-0 w-full h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
-        {/* Stars */}
+      {/* Dynamic Image Background */}
+      <div className="fixed inset-0 w-full h-screen">
+        <ImageDisplay scrollProgress={scrollProgress} />
+        
+        {/* Stars overlay */}
         <div className="absolute inset-0">
           {Array.from({ length: 200 }).map((_, i) => (
             <div
@@ -346,8 +291,8 @@ function HeroSection() {
           ))}
         </div>
         
-        {/* Geometric Shapes like in the image */}
-      <div className="absolute inset-0">
+        {/* Geometric Shapes overlay */}
+        <div className="absolute inset-0">
           {/* Light blue trapezoid from top-left */}
           <div 
             className="absolute w-96 h-96 opacity-20"
@@ -373,17 +318,14 @@ function HeroSection() {
           ></div>
         </div>
         
-        {/* Ground plane like in the image */}
+        {/* Ground plane overlay */}
         <div 
           className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-gray-800 to-transparent opacity-30"
         ></div>
       </div>
       
-      {/* 3D Background Scene - Only visible when scrolling */}
-      <div className="fixed inset-0 w-full h-screen" style={{ 
-        opacity: scrollProgress > 0 ? Math.min(scrollProgress * 3, 1) : 0, 
-        transition: 'opacity 0.3s ease' 
-      }}>
+      {/* Static Background Scene */}
+      <div className="fixed inset-0 w-full h-screen" style={{ zIndex: 1 }}>
         <HeroScene scrollProgress={scrollProgress} />
       </div>
       

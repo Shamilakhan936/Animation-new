@@ -277,3 +277,147 @@ body {
 .section-aurora {
   animation: aurora-wave 8s ease-in-out infinite;
 }
+
+/* Image transition animations */
+@keyframes image-fade-in {
+  0% { 
+    opacity: 0;
+    transform: scale(1.1) translateX(20px);
+    filter: blur(5px);
+  }
+  100% { 
+    opacity: 1;
+    transform: scale(1) translateX(0px);
+    filter: blur(0px);
+  }
+}
+
+@keyframes image-fade-out {
+  0% { 
+    opacity: 1;
+    transform: scale(1) translateX(0px);
+    filter: blur(0px);
+  }
+  100% { 
+    opacity: 0;
+    transform: scale(0.9) translateX(-20px);
+    filter: blur(5px);
+  }
+}
+
+@keyframes image-parallax {
+  0% { 
+    transform: translateX(0px) scale(1);
+  }
+  50% { 
+    transform: translateX(10px) scale(1.02);
+  }
+  100% { 
+    transform: translateX(0px) scale(1);
+  }
+}
+
+@keyframes image-zoom {
+  0% { 
+    transform: scale(1);
+  }
+  100% { 
+    transform: scale(1.1);
+  }
+}
+
+.image-transition-enter {
+  animation: image-fade-in 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.image-transition-exit {
+  animation: image-fade-out 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.image-parallax-effect {
+  animation: image-parallax 8s ease-in-out infinite;
+}
+
+.image-zoom-effect {
+  animation: image-zoom 10s ease-in-out infinite;
+}
+
+/* Enhanced scroll-based image animations */
+@keyframes image-parallax-slow {
+  0% { transform: translateX(0px) translateY(0px) scale(1); }
+  100% { transform: translateX(50px) translateY(20px) scale(1.1); }
+}
+
+@keyframes image-rotation-smooth {
+  0% { transform: rotate(0deg) scale(1); }
+  100% { transform: rotate(180deg) scale(1.05); }
+}
+
+@keyframes image-wave-motion {
+  0% { transform: translateX(0px) translateY(0px); }
+  25% { transform: translateX(40px) translateY(-25px); }
+  50% { transform: translateX(0px) translateY(0px); }
+  75% { transform: translateX(-40px) translateY(25px); }
+  100% { transform: translateX(0px) translateY(0px); }
+}
+
+@keyframes image-zoom-pan {
+  0% { transform: scale(1) translateX(0px) translateY(0px); }
+  100% { transform: scale(1.3) translateX(-60px) translateY(30px); }
+}
+
+@keyframes image-spiral-motion {
+  0% { transform: rotate(0deg) translateX(0px) translateY(0px); }
+  100% { transform: rotate(360deg) translateX(35px) translateY(35px); }
+}
+
+@keyframes image-diagonal-drift {
+  0% { transform: translateX(0px) translateY(0px) rotate(0deg); }
+  100% { transform: translateX(45px) translateY(-25px) rotate(180deg); }
+}
+
+@keyframes image-figure-eight {
+  0% { transform: translateX(0px) translateY(0px); }
+  25% { transform: translateX(50px) translateY(-30px); }
+  50% { transform: translateX(0px) translateY(0px); }
+  75% { transform: translateX(-50px) translateY(30px); }
+  100% { transform: translateX(0px) translateY(0px); }
+}
+
+@keyframes image-complex-orbit {
+  0% { transform: rotate(0deg) translateX(0px) translateY(0px); }
+  100% { transform: rotate(108deg) translateX(40px) translateY(40px); }
+}
+
+/* Image layer classes for different animation styles */
+.image-layer-1 {
+  animation: image-parallax-slow 8s ease-in-out infinite;
+}
+
+.image-layer-2 {
+  animation: image-rotation-smooth 12s ease-in-out infinite;
+}
+
+.image-layer-3 {
+  animation: image-wave-motion 10s ease-in-out infinite;
+}
+
+.image-layer-4 {
+  animation: image-zoom-pan 15s ease-in-out infinite;
+}
+
+.image-layer-5 {
+  animation: image-spiral-motion 20s ease-in-out infinite;
+}
+
+.image-layer-6 {
+  animation: image-diagonal-drift 14s ease-in-out infinite;
+}
+
+.image-layer-7 {
+  animation: image-figure-eight 16s ease-in-out infinite;
+}
+
+.image-layer-8 {
+  animation: image-complex-orbit 18s ease-in-out infinite;
+}
