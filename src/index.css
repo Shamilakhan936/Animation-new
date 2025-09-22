@@ -1,0 +1,279 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+@keyframes arctic-float {
+  0%, 100% { 
+    transform: translateY(0px) translateX(0px); 
+  }
+  25% { 
+    transform: translateY(-15px) translateX(5px); 
+  }
+  50% { 
+    transform: translateY(-10px) translateX(-3px); 
+  }
+  75% { 
+    transform: translateY(-20px) translateX(2px); 
+  }
+}
+
+@keyframes aurora-glow {
+  0%, 100% { 
+    opacity: 0.4;
+    text-shadow: 0 0 20px rgba(45, 212, 191, 0.3), 0 0 40px rgba(0, 136, 255, 0.2);
+  }
+  50% { 
+    opacity: 0.8;
+    text-shadow: 0 0 30px rgba(45, 212, 191, 0.6), 0 0 60px rgba(0, 136, 255, 0.4);
+  }
+}
+
+@keyframes wind-sway {
+  0%, 100% { 
+    transform: translateX(0px) rotate(0deg); 
+  }
+  25% { 
+    transform: translateX(10px) rotate(1deg); 
+  }
+  50% { 
+    transform: translateX(-5px) rotate(-0.5deg); 
+  }
+  75% { 
+    transform: translateX(8px) rotate(0.8deg); 
+  }
+}
+
+@keyframes snow-drift {
+  0%, 100% { 
+    transform: translateX(0px) translateY(0px); 
+  }
+  50% { 
+    transform: translateX(20px) translateY(-10px); 
+  }
+}
+
+.hero-title {
+  animation: arctic-float 8s ease-in-out infinite, aurora-glow 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(45, 212, 191, 0.3));
+}
+
+.hero-subtitle {
+  animation: wind-sway 6s ease-in-out infinite, aurora-glow 3s ease-in-out infinite;
+}
+
+.scroll-indicator {
+  animation: snow-drift 3s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.wind-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.02) 50%, transparent 70%);
+  animation: wind-sweep 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes wind-sweep {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(100%) skewX(-15deg); }
+}
+
+/* Arctic journey animations */
+@keyframes arctic-journey {
+  0% { 
+    transform: translateY(0px) scale(1);
+    opacity: 0.8;
+  }
+  50% { 
+    transform: translateY(-20px) scale(1.05);
+    opacity: 1;
+  }
+  100% { 
+    transform: translateY(0px) scale(1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes village-glow {
+  0%, 100% { 
+    filter: brightness(1) drop-shadow(0 0 5px rgba(59, 130, 246, 0.3));
+  }
+  50% { 
+    filter: brightness(1.2) drop-shadow(0 0 15px rgba(59, 130, 246, 0.6));
+  }
+}
+
+@keyframes wildlife-movement {
+  0%, 100% { 
+    transform: translateX(0px) rotateY(0deg);
+  }
+  25% { 
+    transform: translateX(10px) rotateY(5deg);
+  }
+  50% { 
+    transform: translateX(0px) rotateY(0deg);
+  }
+  75% { 
+    transform: translateX(-10px) rotateY(-5deg);
+  }
+}
+
+.hero-title {
+  animation: arctic-float 8s ease-in-out infinite, aurora-glow 4s ease-in-out infinite, arctic-journey 12s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(45, 212, 191, 0.3));
+}
+
+.hero-subtitle {
+  animation: wind-sway 6s ease-in-out infinite, aurora-glow 3s ease-in-out infinite, wildlife-movement 8s ease-in-out infinite;
+}
+
+/* Enhanced wind effect overlay */
+.wind-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.02) 50%, transparent 70%);
+  animation: wind-sweep 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Arctic atmosphere overlay */
+.arctic-atmosphere {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(14, 165, 233, 0.05) 50%, rgba(59, 130, 246, 0.1) 100%);
+  animation: village-glow 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Sky flight animations */
+@keyframes sky-flight {
+  0% { 
+    transform: translateY(0px) scale(1);
+    filter: brightness(1);
+  }
+  50% { 
+    transform: translateY(-10px) scale(1.02);
+    filter: brightness(1.1);
+  }
+  100% { 
+    transform: translateY(0px) scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes snow-rush {
+  0% { 
+    transform: translateX(0px) translateY(0px);
+    opacity: 0.8;
+  }
+  50% { 
+    transform: translateX(-20px) translateY(-10px);
+    opacity: 1;
+  }
+  100% { 
+    transform: translateX(0px) translateY(0px);
+    opacity: 0.8;
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.hero-title {
+  animation: sky-flight 10s ease-in-out infinite, aurora-glow 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 15px rgba(45, 212, 191, 0.4));
+}
+
+.hero-subtitle {
+  animation: snow-rush 8s ease-in-out infinite, aurora-glow 3s ease-in-out infinite;
+}
+
+/* New animations for enhanced sections */
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px) translateX(0px) rotate(0deg); 
+  }
+  25% { 
+    transform: translateY(-20px) translateX(10px) rotate(90deg); 
+  }
+  50% { 
+    transform: translateY(-10px) translateX(-5px) rotate(180deg); 
+  }
+  75% { 
+    transform: translateY(-25px) translateX(8px) rotate(270deg); 
+  }
+}
+
+@keyframes snowfall {
+  0% { 
+    transform: translateY(-100vh) translateX(0px); 
+    opacity: 0;
+  }
+  10% { 
+    opacity: 1;
+  }
+  90% { 
+    opacity: 1;
+  }
+  100% { 
+    transform: translateY(100vh) translateX(50px); 
+    opacity: 0;
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% { 
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes aurora-wave {
+  0%, 100% { 
+    transform: translateX(-100%) skewX(-10deg);
+    opacity: 0.1;
+  }
+  50% { 
+    transform: translateX(100%) skewX(10deg);
+    opacity: 0.3;
+  }
+}
+
+/* Enhanced section animations */
+.section-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.section-snowfall {
+  animation: snowfall 5s linear infinite;
+}
+
+.section-twinkle {
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.section-aurora {
+  animation: aurora-wave 8s ease-in-out infinite;
+}
